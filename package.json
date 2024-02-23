@@ -1,0 +1,16 @@
+{
+  "name": "unoffical-ollama-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Neon <neon@saahild.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "morgan": "^1.10.0",
+    "ms": "^2.1.3",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^2.6.7"
+  }
+}
