@@ -8,7 +8,7 @@ fetch('https://ollama.com/library/gemma/tags').then(r => r.text()).then(rd => {
   const items =  $('div').filter((i,e) => {
         // console.log(i)
         // console.log(e.attributes[0].value)
-        return e.attributes[0].value === 'flex items-center my-6'
+        return e.attributes[0].value === 'flex px-4 py-3'
     })
     //.each((i,e) => {
       //  const name = e.children[0]
@@ -16,11 +16,12 @@ fetch('https://ollama.com/library/gemma/tags').then(r => r.text()).then(rd => {
     //})
     for (let i = 0; i < items.length; i++) {
         const htmll = $(items[i]).html()
-        // console.log(htmll)
-        const name = tag_name + ':' + htmll.split('<div class="break-all text-lg text-gray-900 group-hover:underline">')[1].split("</div>")[0].trim()
-        let [size, hash, timestamp] = htmll.split('<span>')[1].split("</span>")[0].trim().split('•').map(e => e.trim())
-        console.log(size, hash, timestamp.trim(), name.trim())
-        timestamp = timestamp.replace('ago', '').trim()
+        console.log(htmll)
+        const name = tag_name + ':' + htmll.split('<div class="break-all font-medium text-gray-900 group-hover:underline">')[1].split("</div>")[0].trim()
+        let hash = htmll.split('<span>')[1].split("</span>")[0].split('<span class="font-mono">')[1].trim()
+        let [_, size, timestamp] = htmll.split('<span>')[1].split("</span>")[1].trim().split('•').map(e => e.trim())
+        console.log(size, hash, timestamp, name.trim())
+        timestamp = timestamp ? timestamp.replace('ago', '').replace('Updated', '').trim() : timestamp
         let ntimestamp = new Date(Date.now() - require('ms')(timestamp))
         // console.log(ntimestamp, timestamp)
         // const desc = htmll.split('<p class="mb-4 max-w-md">')[1].split("</p>")[0].trim()

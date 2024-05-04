@@ -19,11 +19,11 @@ async function scrapeModel() {
     for (let i = 0; i < items.length; i++) {
         const htmll = $(items[i]).html()
         const name = htmll.split('<h2 class="mb-3 truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">')[1].split("</h2>")[0].trim()
-        const desc = htmll.split('<p class="mb-4 max-w-md">')[1].split("</p>")[0].trim()
-        const rawLastUpdated = htmll.split('<span class="flex items-center">')[3].split("</span>")[0].trim().split('\n')[1].replace('ago', '').trim()
-        let lastUpdated = new Date(Date.now() - require('ms')(rawLastUpdated))
-        if(rawLastUpdated.toLowerCase().includes('months')) lastUpdated = new Date(Date.now() - require('ms')(rawLastUpdated.split(/ +/)[0] * 4 + ' weeks'))
-        const pulls = htmll.split(`<span class="flex items-center">`)[1].split(`</svg>`)[1].split(`</span>`)[0].trim().split('\n')[1]
+const desc = htmll.split('<p class="mb-4 max-w-md break-words">')[1].split("</p>")[0].trim()
+const rawLastUpdated = htmll.split('<span class="flex items-center">')[3].split("</span>") [1].trim().split('\n')[0].replace('ago', '').trim()
+let lastUpdated = new Date(Date.now() - require('ms')(rawLastUpdated))
+if(rawLastUpdated.toLowerCase().includes('months')) lastUpdated = new Date(Date.now() - require('ms')(rawLastUpdated.split(/ +/)[0] * 4 + ' weeks'))
+const pulls = htmll.split(`<span class="flex items-center">`)[1].split(`</svg>`)[1].split(`<span class="hidden sm:flex">`)[0].trim().split('\n')[0]
         const tags = await scrapeTags(name)
         res.push({ name, desc, htmll: JSON.parse(JSON.stringify(htmll)), rawLastUpdated, lastUpdated, pulls, tags })
     }
@@ -43,7 +43,7 @@ async function scrapeTags(tag_name) {
           const items =  $('div').filter((i,e) => {
                 // console.log(i)
                 // console.log(e.attributes[0].value)
-                return e.attributes[0].value === 'flex items-center my-6'
+                return e.attributes[0].value === 'flex px-4 py-3'
             })
             //.each((i,e) => {
               //  const name = e.children[0]
@@ -52,10 +52,11 @@ async function scrapeTags(tag_name) {
             for (let i = 0; i < items.length; i++) {
                 const htmll = $(items[i]).html()
                 // console.log(htmll)
-                const name = tag_name + ':' + htmll.split('<div class="break-all text-lg text-gray-900 group-hover:underline">')[1].split("</div>")[0].trim()
-                let [size, hash, timestamp] = htmll.split('<span>')[1].split("</span>")[0].trim().split('•').map(e => e.trim())
-                console.log(size, hash, timestamp.trim(), name.trim())
-                timestamp = timestamp.replace('ago', '').trim()
+                const name = tag_name + ':' + htmll.split('<div class="break-all font-medium text-gray-900 group-hover:underline">')[1].split("</div>")[0].trim()
+                let hash = htmll.split('<span>')[1].split("</span>")[0].split('<span class="font-mono">')[1].trim()
+                let [_, size, timestamp] = htmll.split('<span>')[1].split("</span>")[1].trim().split('•').map(e => e.trim())
+                console.log(size, hash, timestamp, name.trim())
+                timestamp = timestamp ? timestamp.replace('ago', '').replace('Updated', '').trim() : timestamp
                 let ntimestamp = new Date(Date.now() - require('ms')(timestamp))
                 // console.log(ntimestamp, timestamp)
                 // const desc = htmll.split('<p class="mb-4 max-w-md">')[1].split("</p>")[0].trim()

@@ -1,0 +1,16 @@
+const htmll = `\n      <a href=\"/library/phi3\" class=\"group w-full\">\n        <h2 class=\"mb-3 truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl\">\n          phi3\n        </h2>\n        \n  \n    <p class=\"mb-4 max-w-md break-words\">Phi-3 Mini is a 3.8B parameters, lightweight, state-of-the-art open model by Microsoft.</p>\n  \n  <p class=\"my-2 flex space-x-5 text-[13px] font-medium text-neutral-500\">\n    \n      <span class=\"flex items-center\">\n        <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" class=\"mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3\"></path>\n        </svg>\n        69.8K\n        <span class=\"hidden sm:flex\">\n          &nbsp;Pulls\n        </span>\n      </span>\n    \n    \n      <span class=\"flex items-center\">\n        <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" class=\"mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z\"></path>\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 6h.008v.008H6V6z\"></path>\n        </svg>\n        6<span class=\"hidden sm:flex\">&nbsp;Tags</span>\n      </span>\n    \n    <span class=\"flex items-center\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" class=\"mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4\">\n        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z\"></path>\n      </svg>\n      <span class=\"hidden sm:flex\">Updated&nbsp;</span>\n      10 days ago\n    </span>\n  </p>\n\n      </a>\n    `
+const name = htmll.split('<h2 class="mb-3 truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">')[1].split("</h2>")[0].trim()
+const desc = htmll.split('<p class="mb-4 max-w-md break-words">')[1].split("</p>")[0].trim()
+const rawLastUpdated = htmll.split('<span class="flex items-center">')[3].split("</span>") [1].trim().split('\n')[0].replace('ago', '').trim()
+let lastUpdated = new Date(Date.now() - require('ms')(rawLastUpdated))
+if(rawLastUpdated.toLowerCase().includes('months')) lastUpdated = new Date(Date.now() - require('ms')(rawLastUpdated.split(/ +/)[0] * 4 + ' weeks'))
+const pulls = htmll.split(`<span class="flex items-center">`)[1].split(`</svg>`)[1].split(`<span class="hidden sm:flex">`)[0].trim().split('\n')[0]
+console.log({
+    pulls,
+    lastUpdated,
+    rawLastUpdated,
+    desc,
+    name
+})
+console.log(new Array(40).join('='))
+console.log(htmll)
