@@ -1,6 +1,7 @@
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
 const tag_name = 'gemma'
+
 fetch('https://ollama.com/library/gemma/tags').then(r => r.text()).then(rd => {
     // console.log(rd)
     const $ = cheerio.load(rd)
@@ -33,5 +34,5 @@ fetch('https://ollama.com/library/gemma/tags').then(r => r.text()).then(rd => {
     }
     // console.log(htmll)
     // require('fs').writeFileSync('./models.json', JSON.stringify(res, null, 2))
-    console.log(res[0])
+    // console.log(res[0])
 })

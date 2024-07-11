@@ -3,7 +3,10 @@ const express = require('express');
 const app = express();
 
 const NodeCache = require( "node-cache" );
-const myCache = new NodeCache();
+const myCache = new NodeCache({
+    // stdTTL: 1000 * 
+    deleteOnExpire: true,
+});
 // setup ratelimits because YK ollama is gonna ratelimit 
 
 const rateLimit = require("express-rate-limit");
@@ -33,7 +36,7 @@ app.get('/api/models', async (req, res) => {
         const scrape = require('./scrape')
         let models = await scrape.scrapeModel()
         myCache.set('models', models, 1000)
-        res.send(apiResonse(201, 'success', models))
+        res.status(201).send(apiResonse(201, 'success', models))
     }
     
 })
