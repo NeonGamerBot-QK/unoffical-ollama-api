@@ -45,8 +45,8 @@ async function scrapeModel () {
     })
   })
 }
-async function scrapeBlogPage(post_id) {
-  return fetch('https://ollama.com/blog/'+post_id).then(r => r.text()).then((rd) => {
+async function scrapeBlogPage (post_id) {
+  return fetch('https://ollama.com/blog/' + post_id).then(r => r.text()).then((rd) => {
     const $ = cheerio.load(rd)
       // const base_html = $.html()
     const title = $('h1.text-4xl').text().trim()
@@ -54,13 +54,12 @@ async function scrapeBlogPage(post_id) {
     const blog_post_html = $('section').html()
     return ({title, date, blog_post_html})
   })
-  
 }
-async function scrapeBlogs() {
+async function scrapeBlogs () {
   return await fetch('https://ollama.com/blog').then(r => r.text()).then((rd) => {
     const $ = cheerio.load(rd)
     let res = []
-  
+
   //   const items =  $('a').filter((i,e) => {
   //         // console.log(i)
   //         // console.log(e.attributes[0].value)
@@ -84,7 +83,7 @@ async function scrapeBlogs() {
         name, desc, date, html_link: `https://ollama.ai${link}`, id: link.replace('/blog/', '')
       })
     }
-    return res;
+    return res
   })
 }
 async function scrapeTags (tag_name) {
