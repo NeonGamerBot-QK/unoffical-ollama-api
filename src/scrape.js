@@ -45,6 +45,48 @@ async function scrapeModel () {
     })
   })
 }
+async function scrapeBlogPage(post_id) {
+  return fetch('https://ollama.com/blog/'+post_id).then(r => r.text()).then((rd) => {
+    const $ = cheerio.load(rd)
+      // const base_html = $.html()
+    const title = $('h1.text-4xl').text().trim()
+    const date = new Date($(`h2.text-neutral-500`).text().trim())
+    const blog_post_html = $('section').html()
+    return ({title, date, blog_post_html})
+  })
+  
+}
+async function scrapeBlogs() {
+  return await fetch('https://ollama.com/blog').then(r => r.text()).then((rd) => {
+    const $ = cheerio.load(rd)
+    let res = []
+  
+  //   const items =  $('a').filter((i,e) => {
+  //         // console.log(i)
+  //         // console.log(e.attributes[0].value)
+  //         return e.attributes[0].value === 'group border-b py-10'
+  //     }).toArray()
+      // console.log(items)
+      // console.log(items.after(items.first()).toArray())
+      // cheerio did NOT wana work so manual parsing
+    const base_html = $.html()
+    const items = $('main').children().first().children().toArray()
+      // console.log(items)
+    for (let i = 0; i < items.length; i++) {
+          // console.log(items[i])
+          // const htmll = $(items[i]).html()
+          // console.log(htmll)
+      const link = items[i].attributes.find(e => e.name == 'href').value
+      const name = $(items[i]).children().first().text().trim()
+      const desc = $($(items[i]).children().get(2)).text().trim()
+      const date = new Date($($(items[i]).children().get(1)).text().trim())
+      res.push({
+        name, desc, date, html_link: `https://ollama.ai${link}`, id: link.replace('/blog/', '')
+      })
+    }
+    return res;
+  })
+}
 async function scrapeTags (tag_name) {
   return new Promise((ress, rej) => {
     fetch(`https://ollama.com/library/${tag_name}/tags`).then(r => r.text()).then(rd => {
@@ -84,4 +126,4 @@ async function scrapeTags (tag_name) {
     })
   })
 }
-module.exports = { scrapeModel, scrapeTags, getSpecialCases }
+module.exports = { scrapeModel, scrapeTags, getSpecialCases, scrapeBlogPage, scrapeBlogs }
